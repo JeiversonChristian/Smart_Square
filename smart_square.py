@@ -8,12 +8,12 @@ import os
 LARGURA_TELA = 500
 ALTURA_TELA = 700
 QUADRADO_HUMANO_IMG = pygame.image.load('imgs/quadrado_humano.jpg')
-MURO = pygame.image.load('imgs/muro.jpg')
-CHAO = pygame.image.load('imgs/chao.jpg')
+MURO_IMG = pygame.image.load('imgs/muro.jpg')
+CHAO_IMG = pygame.image.load('imgs/chao.jpg')
 
 def desenhar_tela(tela):
     
-    tela.blit(CHAO, (0,0))
+    tela.blit(CHAO_IMG, (0,0))
     pygame.display.update()
 
 def main():
