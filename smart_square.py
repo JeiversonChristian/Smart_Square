@@ -1,8 +1,7 @@
 # Bibliotecas 
 
 import pygame
-import os
-import random
+import time
 
 # Constantes
 
@@ -18,6 +17,9 @@ LARGURA_MURO = MURO_IMG.get_width()
 ALTURA_MURO = MURO_IMG.get_height()
 
 CHAO_IMG = pygame.image.load('imgs/chao.jpg')
+
+pygame.font.init()
+FONT = pygame.font.SysFont('arial', 25)
 
 # Classes
 
@@ -62,7 +64,7 @@ class Muro:
 
 # Funções
 
-def desenhar_tela(tela, quadrado_humano, muros):
+def desenhar_tela(tela, quadrado_humano, muros, texto_tempo):
     
     tela.blit(CHAO_IMG, (0,0))
 
@@ -70,6 +72,8 @@ def desenhar_tela(tela, quadrado_humano, muros):
 
     for i in range(len(muros)):
         muros[i].desenhar(tela)
+
+    tela.blit(texto_tempo, (LARGURA_TELA - texto_tempo.get_width() - 10, 10) )
 
     pygame.display.update()
 
@@ -91,8 +95,13 @@ def main():
     muro8 = Muro(90, 500)
     muros = [muro1, muro2, muro3, muro4, muro5, muro6, muro7, muro8]
 
-    c = 1
+    inicio = time.time()
+
     while True:
+
+        fim = time.time()
+        tempo_decorrido = fim - inicio
+        texto_tempo = FONT.render(f"{tempo_decorrido:.3f}s", 1, (0,0,0))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -109,6 +118,13 @@ def main():
                         break
             if permitido_andar_frente == 1:
                 quadrado_humano.andar_frente()
+                if quadrado_humano.y > ALTURA_TELA:
+                    fim = time.time()
+                    tempo_decorrido = fim - inicio
+                    print("---------------------------------------")
+                    print(f'tempo: {tempo_decorrido:.3f} segundos ')
+                    print("---------------------------------------")
+                    main()
 
         permitido_andar_tras = 1
         if keys[pygame.K_w]:
@@ -145,6 +161,8 @@ def main():
 
         #relogio.tick(30)
 
-        desenhar_tela(tela, quadrado_humano, muros)
+        desenhar_tela(tela, quadrado_humano, muros, texto_tempo)
 
 main()
+
+
