@@ -8,9 +8,9 @@ import time
 LARGURA_TELA = 500
 ALTURA_TELA = 700
 
-QUADRADO_AI_IMG = pygame.image.load('imgs/quadrado_ai1.jpg')
-LARGURA_AI_HUMANO_IMG = QUADRADO_AI_IMG.get_width()
-ALTURA_AI_HUMANO_IMG = QUADRADO_AI_IMG.get_height()
+QUADRADO_AI_IMG1 = pygame.image.load('imgs/quadrado_ai1.jpg')
+LARGURA_AI_HUMANO_IMG = QUADRADO_AI_IMG1.get_width()
+ALTURA_AI_HUMANO_IMG = QUADRADO_AI_IMG1.get_height()
 
 MURO_IMG = pygame.image.load('imgs/muro.jpg')
 LARGURA_MURO = MURO_IMG.get_width()
@@ -25,14 +25,15 @@ FONT = pygame.font.SysFont('arial', 25)
 
 class Quadrado:
 
-    IMG = QUADRADO_AI_IMG
+    IMG = QUADRADO_AI_IMG1
     LARGURA = LARGURA_AI_HUMANO_IMG
     ALTURA = ALTURA_AI_HUMANO_IMG
     VELOCIDADE = 0.5
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, inputs):
         self.x = x
         self.y = y
+        self.inputs = inputs
 
     def desenhar(self, tela):
         tela.blit(self.IMG, (self.x, self.y))
@@ -82,9 +83,6 @@ def main():
     #relogio = pygame.time.Clock()
     tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
 
-    x = LARGURA_TELA/2 - LARGURA_AI_HUMANO_IMG/2
-    quadrado_humano = Quadrado(x,0)
-
     muro1 = Muro(0, 70)
     muro2 = Muro(100, 190)
     muro3 = Muro(70, 220)
@@ -94,6 +92,12 @@ def main():
     muro7 = Muro(222, 666)
     muro8 = Muro(90, 500)
     muros = [muro1, muro2, muro3, muro4, muro5, muro6, muro7, muro8]
+
+    x = LARGURA_TELA/2 - LARGURA_AI_HUMANO_IMG/2
+    inputs = []
+    for i in range(len(muros)):
+        inputs.append([muros[i].x,muros[i].y])
+    quadrado_humano = Quadrado(x,0,inputs)
 
     inicio = time.time()
 
