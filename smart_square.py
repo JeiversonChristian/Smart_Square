@@ -26,7 +26,7 @@ class Quadrado:
     IMG = QUADRADO_HUMANO_IMG
     LARGURA = LARGURA_QUADRADO_HUMANO_IMG
     ALTURA = ALTURA_QUADRADO_HUMANO_IMG
-    VELOCIDADE = 5
+    VELOCIDADE = 0.5
 
     def __init__(self, x, y):
         self.x = x
@@ -75,7 +75,7 @@ def desenhar_tela(tela, quadrado_humano, muros):
 
 def main():
     
-    relogio = pygame.time.Clock()
+    #relogio = pygame.time.Clock()
     tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
 
     x = LARGURA_TELA/2 - LARGURA_QUADRADO_HUMANO_IMG/2
@@ -91,28 +91,28 @@ def main():
     muro8 = Muro(90, 500)
     muros = [muro1, muro2, muro3, muro4, muro5, muro6, muro7, muro8]
 
+    c = 1
     while True:
 
-        while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
+        keys = pygame.key.get_pressed()
 
-            keys = pygame.key.get_pressed()
+        permitido_andar_frente = 1
+        if keys[pygame.K_s]:
+            for i in range(len(muros)):
+                if muros[i].x < quadrado_humano.x + quadrado_humano.LARGURA and muros[i].x + muros[i].LARGURA > quadrado_humano.x:  
+                    if quadrado_humano.y + quadrado_humano.ALTURA + quadrado_humano.VELOCIDADE > muros[i].y and quadrado_humano.y + quadrado_humano.ALTURA + quadrado_humano.VELOCIDADE < muros[i].y + muros[i].ALTURA:
+                        permitido_andar_frente = 0
+                        break
+            if permitido_andar_frente == 1:
+                quadrado_humano.andar_frente()
 
-            permitido_andar_frente = 1
-            if keys[pygame.K_s]:
-                for i in range(len(muros)):
-                    if muros[i].x < quadrado_humano.x + quadrado_humano.LARGURA and muros[i].x + muros[i].LARGURA > quadrado_humano.x:  
-                        if quadrado_humano.y + quadrado_humano.ALTURA + quadrado_humano.VELOCIDADE > muros[i].y and quadrado_humano.y + quadrado_humano.ALTURA + quadrado_humano.VELOCIDADE < muros[i].y + muros[i].ALTURA:
-                            permitido_andar_frente = 0
-                            break
-                if permitido_andar_frente == 1:
-                    quadrado_humano.andar_frente()
-
-            permitido_andar_tras = 1
-            if keys[pygame.K_w]:
+        permitido_andar_tras = 1
+        if keys[pygame.K_w]:
+            if quadrado_humano.y - quadrado_humano.VELOCIDADE > 0:
                 for i in range(len(muros)):
                     if muros[i].x < quadrado_humano.x + quadrado_humano.LARGURA and muros[i].x + muros[i].LARGURA > quadrado_humano.x:  
                         if quadrado_humano.y - quadrado_humano.VELOCIDADE < muros[i].y + muros[i].ALTURA and quadrado_humano.y - quadrado_humano.VELOCIDADE > muros[i].y:
@@ -121,8 +121,9 @@ def main():
                 if permitido_andar_tras == 1:
                     quadrado_humano.andar_tras()
 
-            permitido_andar_esquerda = 1
-            if keys[pygame.K_a]:
+        permitido_andar_esquerda = 1
+        if keys[pygame.K_a]:
+            if quadrado_humano.x - quadrado_humano.VELOCIDADE > 0:
                 for i in range(len(muros)):
                     if muros[i].y < quadrado_humano.y + quadrado_humano.ALTURA and muros[i].y + muros[i].ALTURA > quadrado_humano.y:
                         if quadrado_humano.x - quadrado_humano.VELOCIDADE < muros[i].x + muros[i].LARGURA and quadrado_humano.x - quadrado_humano.VELOCIDADE > muros[i].x:
@@ -131,8 +132,9 @@ def main():
                 if permitido_andar_esquerda == 1:
                     quadrado_humano.andar_esquerda()
 
-            permitido_andar_direita = 1
-            if keys[pygame.K_d]:
+        permitido_andar_direita = 1
+        if keys[pygame.K_d]:
+            if quadrado_humano.x + quadrado_humano.LARGURA + quadrado_humano.VELOCIDADE < LARGURA_TELA:
                 for i in range(len(muros)):
                     if muros[i].y < quadrado_humano.y + quadrado_humano.ALTURA and muros[i].y + muros[i].ALTURA > quadrado_humano.y:
                         if quadrado_humano.x + quadrado_humano.LARGURA + quadrado_humano.VELOCIDADE > muros[i].x and quadrado_humano.x + quadrado_humano.LARGURA + quadrado_humano.VELOCIDADE < muros[i].x + muros[i].LARGURA:
@@ -141,7 +143,8 @@ def main():
                 if permitido_andar_direita == 1:            
                     quadrado_humano.andar_direita()
 
-            relogio.tick(30)
-            desenhar_tela(tela, quadrado_humano, muros)
+        #relogio.tick(30)
+
+        desenhar_tela(tela, quadrado_humano, muros)
 
 main()
