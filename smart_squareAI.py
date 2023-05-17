@@ -4,6 +4,7 @@ import pygame
 import time
 import random
 import math
+import sys
 
 # Constantes
 
@@ -29,6 +30,8 @@ FONT = pygame.font.SysFont('arial', 25)
 
 MENOR_PESO = -30
 MAIOR_PESO = 30
+
+TAXA_MUTACAO_PESO = 30
 
 # Classes
 
@@ -105,43 +108,12 @@ def desenhar_tela(tela, texto_tempo, quadrados, muros):
 
     pygame.display.update()
 
-def main():
-    
-    #relogio = pygame.time.Clock()
-    tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
+def rodar(quadrados, muros, tela):
 
-    muro1 = Muro(0, 70)
-    muro2 = Muro(100, 190)
-    muro3 = Muro(70, 220)
-    muro4 = Muro(240,440)
-    muro5 = Muro(400, 190)
-    muro6 = Muro(240, 300)
-    muro7 = Muro(222, 666)
-    muro8 = Muro(90, 500)
-    muros = [muro1, muro2, muro3, muro4, muro5, muro6, muro7, muro8]
-
-    quadrados = []
-    x = LARGURA_TELA/2 - LARGURA_QUADRADO_AI/2
-    for i in range(4):
-        quadrado_ai = Quadrado(x,0,i)
-        quadrados.append(quadrado_ai)
-    
-    inputs = []
-    pesos = []
-    for i in range(len(quadrados)):
-        for j in range(len(muros)):
-            distancia = ((quadrados[i].x - muros[j].x) ** 2) + ((quadrados[i].y - muros[j].y) ** 2) ** (1/2)
-            inputs.append(distancia)
-            peso = random.randint(MENOR_PESO, MAIOR_PESO)
-            pesos.append(peso)
-        quadrados[i].inputs = inputs
-        quadrados[i].pesos = pesos
-        inputs = []
-        pesos = []
-    
     inicio = time.time()
     esperar_mudar_inputs = 50
     contador = 0
+    melhor_quadrado = quadrados[0]
 
     while True:
 
@@ -151,7 +123,14 @@ def main():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
+                fim = time.time()
+                tempo_decorrido = fim - inicio
+                print("---------------------------------------")
+                print(f'tempo: {tempo_decorrido:.3f} segundos ')
+                print("---------------------------------------")
+                print(f'Melhor Quadrado Pesos: {melhor_quadrado.pesos}')
+                sys.exit()
+                #pygame.quit()
 
         for i in range(len(quadrados)):
 
@@ -172,7 +151,9 @@ def main():
                         print("---------------------------------------")
                         print(f'tempo: {tempo_decorrido:.3f} segundos ')
                         print("---------------------------------------")
-                        main()
+                        print(f'Melhor Quadrado Pesos: {melhor_quadrado.pesos}')
+                        sys.exit()
+                        #pygame.quit()
 
             permitido_andar_tras = 1
             if output >= -0.5 and output < 0:
@@ -224,7 +205,67 @@ def main():
         tempo_decorrido = fim - inicio
 
         if tempo_decorrido >= 16:
-            main()
+
+            distancia_pro_fim = ALTURA_TELA
+            for i in range(len(quadrados)):
+                distancia = ALTURA_TELA - quadrados[i].y
+                if distancia <= distancia_pro_fim:
+                    melhor_quadrado = quadrados[i]
+                    distancia_pro_fim = distancia
+            
+            novos_quadrados = []
+            melhor_quadrado.x = LARGURA_TELA/2 - LARGURA_QUADRADO_AI/2
+            melhor_quadrado.y = 0
+            novos_quadrados.append(melhor_quadrado)
+            for i in range(len(quadrados)):
+                if quadrados[i] != melhor_quadrado:
+                    for j in range(len(quadrados[i].pesos)): 
+                        if random.randint(1,100) <= TAXA_MUTACAO_PESO:
+                            novo_peso = random.randint(MENOR_PESO,MAIOR_PESO)
+                            quadrados[i].pesos[j] = novo_peso
+                        else:
+                            quadrados[i].pesos[j] = melhor_quadrado.pesos[j]
+                    quadrados[i].x = LARGURA_TELA/2 - LARGURA_QUADRADO_AI/2
+                    quadrados[i].y = 0
+                    novos_quadrados.append(quadrados[i])
+
+            rodar(quadrados, muros, tela)
+
+def main():
+    
+    #relogio = pygame.time.Clock()
+    tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
+
+    muro1 = Muro(0, 70)
+    muro2 = Muro(100, 190)
+    muro3 = Muro(70, 220)
+    muro4 = Muro(240,440)
+    muro5 = Muro(400, 190)
+    muro6 = Muro(240, 300)
+    muro7 = Muro(222, 666)
+    muro8 = Muro(90, 500)
+    muros = [muro1, muro2, muro3, muro4, muro5, muro6, muro7, muro8]
+
+    quadrados = []
+    x = LARGURA_TELA/2 - LARGURA_QUADRADO_AI/2
+    for i in range(4):
+        quadrado_ai = Quadrado(x,0,i)
+        quadrados.append(quadrado_ai)
+    
+    inputs = []
+    pesos = []
+    for i in range(len(quadrados)):
+        for j in range(len(muros)):
+            distancia = ((quadrados[i].x - muros[j].x) ** 2) + ((quadrados[i].y - muros[j].y) ** 2) ** (1/2)
+            inputs.append(distancia)
+            peso = random.randint(MENOR_PESO, MAIOR_PESO)
+            pesos.append(peso)
+        quadrados[i].inputs = inputs
+        quadrados[i].pesos = pesos
+        inputs = []
+        pesos = []
+
+    rodar(quadrados, muros, tela)    
 
 main()
     
