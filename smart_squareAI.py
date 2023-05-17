@@ -2,6 +2,7 @@
 
 import pygame
 import time
+import random
 
 # Constantes
 
@@ -25,6 +26,9 @@ CHAO_IMG = pygame.image.load('imgs/chao.jpg')
 pygame.font.init()
 FONT = pygame.font.SysFont('arial', 25)
 
+MENOR_PESO = -30
+MAIOR_PESO = 30
+
 # Classes
 
 class Quadrado:
@@ -45,6 +49,8 @@ class Quadrado:
             self.img = QUADRADO_HUMANO_AI3
         if i == 3:
             self.img = QUADRADO_HUMANO_AI4
+        self.inputs = []
+        self.pesos = []
 
     def desenhar(self, tela):
         tela.blit(self.img, (self.x, self.y))
@@ -108,8 +114,21 @@ def main():
     quadrados = []
     x = LARGURA_TELA/2 - LARGURA_QUADRADO_AI/2
     for i in range(4):
-        quadrado_ai = Quadrado(x,i*40,i)
+        quadrado_ai = Quadrado(x,0,i)
         quadrados.append(quadrado_ai)
+    
+    inputs = []
+    pesos = []
+    for i in range(len(quadrados)):
+        for j in range(len(muros)):
+            distancia = ((quadrados[i].x - muros[j].x) ** 2) + ((quadrados[i].y - muros[j].y) ** 2) ** (1/2)
+            inputs.append(distancia)
+            peso = random.randint(MENOR_PESO, MAIOR_PESO)
+            pesos.append(peso)
+        quadrados[i].inputs = inputs
+        quadrados[i].pesos = pesos
+        inputs = []
+        pesos = []
 
     
     inicio = time.time()
@@ -124,7 +143,7 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
 
-        for i in range(4):
+        for i in range(len(quadrados)):
             if i == 1:
                 quadrados[i].andar_frente()
             if i == 2:
