@@ -3,6 +3,7 @@
 import pygame
 import time
 import random
+import math
 
 # Constantes
 
@@ -67,6 +68,14 @@ class Quadrado:
     def andar_esquerda(self):
         self.x -= self.VELOCIDADE
 
+    def calcular_output(self):
+        produto_vet = 0
+        for i in range(len(self.pesos)):
+            produto_vet += self.pesos[i] * self.inputs[i]
+        argumento = math.radians(produto_vet)
+        output = math.sin(argumento)
+        return output
+
 class Muro:
 
     IMG = MURO_IMG
@@ -129,9 +138,10 @@ def main():
         quadrados[i].pesos = pesos
         inputs = []
         pesos = []
-
     
     inicio = time.time()
+    esperar_mudar_inputs = 50
+    contador = 0
 
     while True:
 
@@ -144,12 +154,25 @@ def main():
                 pygame.quit()
 
         for i in range(len(quadrados)):
-            if i == 1:
+            output = quadrados[i].calcular_output()
+            if output >= -1 and output < -0.5:
                 quadrados[i].andar_frente()
-            if i == 2:
-                quadrados[i].andar_esquerda()
-            if i == 3:
+            if output >= -0.5 and output < 0:
+                quadrados[i].andar_tras()
+            if output >= 0 and output < 0.5:
                 quadrados[i].andar_direita()
+            if output >= 0.5 and output <= 1:
+                quadrados[i].andar_esquerda()
+        contador += 1
+
+        if contador == esperar_mudar_inputs:
+            inputs = []
+            for i in range(len(quadrados)):
+                for j in range(len(muros)):
+                    distancia = ((quadrados[i].x - muros[j].x) ** 2) + ((quadrados[i].y - muros[j].y) ** 2) ** (1/2)
+                    inputs.append(distancia)
+                quadrados[i].inputs = inputs
+            contador = 0
 
         desenhar_tela(tela, texto_tempo, quadrados, muros)
 
