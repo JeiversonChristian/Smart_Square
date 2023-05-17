@@ -154,15 +154,59 @@ def main():
                 pygame.quit()
 
         for i in range(len(quadrados)):
+
             output = quadrados[i].calcular_output()
+
+            permitido_andar_frente = 1
             if output >= -1 and output < -0.5:
-                quadrados[i].andar_frente()
+                for j in range(len(muros)):
+                    if muros[j].x <  quadrados[i].x +  quadrados[i].LARGURA and muros[j].x + muros[j].LARGURA >  quadrados[i].x:
+                        if quadrados[i].y + quadrados[i].ALTURA + quadrados[i].VELOCIDADE > muros[j].y and quadrados[i].y + quadrados[i].ALTURA + quadrados[i].VELOCIDADE < muros[j].y + muros[j].ALTURA:  
+                            permitido_andar_frente = 0
+                            break
+                if permitido_andar_frente == 1:
+                    quadrados[i].andar_frente()
+                    if quadrados[i].y > ALTURA_TELA:
+                        fim = time.time()
+                        tempo_decorrido = fim - inicio
+                        print("---------------------------------------")
+                        print(f'tempo: {tempo_decorrido:.3f} segundos ')
+                        print("---------------------------------------")
+                        main()
+
+            permitido_andar_tras = 1
             if output >= -0.5 and output < 0:
-                quadrados[i].andar_tras()
+                if quadrados[i].y - quadrados[i].VELOCIDADE > 0:
+                    for j in range(len(muros)):
+                        if muros[j].x < quadrados[i].x + quadrados[i].LARGURA and muros[j].x + muros[j].LARGURA > quadrados[i].x:
+                            if quadrados[i].y - quadrados[i].VELOCIDADE < muros[j].y + muros[j].ALTURA and quadrados[i].y - quadrados[i].VELOCIDADE > muros[j].y:
+                                permitido_andar_tras = 0
+                                break
+                    if permitido_andar_tras == 1:
+                        quadrados[i].andar_tras()
+
+            permitido_andar_direita = 1
             if output >= 0 and output < 0.5:
-                quadrados[i].andar_direita()
+                if quadrados[i].x + quadrados[i].LARGURA + quadrados[i].VELOCIDADE < LARGURA_TELA:
+                    for j in range(len(muros)):
+                        if muros[j].y < quadrados[i].y + quadrados[i].ALTURA and muros[j].y + muros[j].ALTURA > quadrados[i].y:
+                            if quadrados[i].x + quadrados[i].LARGURA + quadrados[i].VELOCIDADE > muros[j].x and quadrados[i].x + quadrados[i].LARGURA + quadrados[i].VELOCIDADE < muros[j].x + muros[j].LARGURA:
+                                permitido_andar_direita = 0
+                                break
+                    if permitido_andar_direita == 1:
+                        quadrados[i].andar_direita()
+
+            permitido_andar_esquerda = 1
             if output >= 0.5 and output <= 1:
-                quadrados[i].andar_esquerda()
+                if quadrados[i].x - quadrados[i].VELOCIDADE > 0:
+                    for j in range(len(muros)):
+                        if muros[j].y < quadrados[i].y + quadrados[i].ALTURA and muros[j].y + muros[j].ALTURA > quadrados[i].y:
+                            if quadrados[i].x - quadrados[i].VELOCIDADE < muros[j].x + muros[j].LARGURA and quadrados[i].x - quadrados[i].VELOCIDADE > muros[j].x:
+                                permitido_andar_esquerda = 0
+                                break
+                    if permitido_andar_esquerda == 1:
+                        quadrados[i].andar_esquerda()
+
         contador += 1
 
         if contador == esperar_mudar_inputs:
