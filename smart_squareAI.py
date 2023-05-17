@@ -124,6 +124,14 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
 
+        for i in range(4):
+            if i == 1:
+                quadrados[i].andar_frente()
+            if i == 2:
+                quadrados[i].andar_esquerda()
+            if i == 3:
+                quadrados[i].andar_direita()
+
         desenhar_tela(tela, texto_tempo, quadrados, muros)
 
 main()
