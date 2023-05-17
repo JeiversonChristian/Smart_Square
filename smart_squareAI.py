@@ -61,14 +61,30 @@ class Quadrado:
     def andar_esquerda(self):
         self.x -= self.VELOCIDADE
 
+class Muro:
+
+    IMG = MURO_IMG
+    LARGURA = LARGURA_MURO
+    ALTURA = ALTURA_MURO
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+    
+    def desenhar(self, tela):
+        tela.blit(self.IMG, (self.x, self.y))
+
     # Funções
 
-def desenhar_tela(tela, texto_tempo, quadrados):
+def desenhar_tela(tela, texto_tempo, quadrados, muros):
     
     tela.blit(CHAO_IMG, (0,0))
 
     tela.blit(texto_tempo, (LARGURA_TELA - texto_tempo.get_width() - 10, 10) )
 
+    for i in range(len(muros)):
+        muros[i].desenhar(tela)
+    
     for i in range(4):
         quadrados[i].desenhar(tela)
 
@@ -78,6 +94,16 @@ def main():
     
     #relogio = pygame.time.Clock()
     tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
+
+    muro1 = Muro(0, 70)
+    muro2 = Muro(100, 190)
+    muro3 = Muro(70, 220)
+    muro4 = Muro(240,440)
+    muro5 = Muro(400, 190)
+    muro6 = Muro(240, 300)
+    muro7 = Muro(222, 666)
+    muro8 = Muro(90, 500)
+    muros = [muro1, muro2, muro3, muro4, muro5, muro6, muro7, muro8]
 
     quadrados = []
     x = LARGURA_TELA/2 - LARGURA_QUADRADO_AI/2
@@ -98,7 +124,7 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
 
-        desenhar_tela(tela, texto_tempo, quadrados)
+        desenhar_tela(tela, texto_tempo, quadrados, muros)
 
 main()
     
