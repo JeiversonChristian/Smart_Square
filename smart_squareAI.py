@@ -220,5 +220,11 @@ def main():
 
         desenhar_tela(tela, texto_tempo, quadrados, muros)
 
+        fim = time.time()
+        tempo_decorrido = fim - inicio
+
+        if tempo_decorrido >= 16:
+            main()
+
 main()
     
