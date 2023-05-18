@@ -1,5 +1,6 @@
 <h1>Smart Square</h1>
 <h2>Algoritmo que treina um quadrado para atravessar um caminho com muros.</h2>
+<h3>Projeto concluído</h3>
 <br>
 Este código é um jogo conceitual criado para uma inteligência artificial aprender a jogar.
 <br>
