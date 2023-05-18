@@ -8,9 +8,9 @@ Este código é um jogo conceitual criado para uma inteligência artificial apre
  <br>
  <br>
  Veja o vídeo para entender mais sobre o projeto:
- <br>
+ 
  [![vídeo mostrando o projeto](https://img.youtube.com/vi/Ney7iEp3irs/0.jpg)](https://www.youtube.com/watch?v=Ney7iEp3irs)
- <br>
+ 
  <br>
  <h2>Como executar esse programa:</h2>
  <ul>
